@@ -1,13 +1,13 @@
 import './style.css'
-import { roster, rosterRows } from './roster.js'
+import { loadRoster, saveRoster, rosterRows } from './roster.js'
 
 document.querySelector('#app').innerHTML = `
 <header>
   <p class="hero-badge">My roster</p>
   <h1>Fantasy Basketball</h1>
   <p class="lead">
-    Add a player from this page. New rows stay until you refresh — they are
-    not saved yet.
+    Add a player from this page. The list is saved in this browser, so it
+    stays after a refresh.
   </p>
 </header>
 
@@ -50,6 +50,7 @@ document.querySelector('#app').innerHTML = `
 
 const rosterBody = document.querySelector('#roster-body')
 const addPlayerForm = document.querySelector('#add-player')
+const roster = loadRoster()
 
 function renderRoster() {
   rosterBody.innerHTML = rosterRows(roster)
@@ -68,6 +69,7 @@ addPlayerForm.addEventListener('submit', (event) => {
   }
 
   roster.push({ name, team, position })
+  saveRoster(roster)
   renderRoster()
   form.reset()
   form.name.focus()
