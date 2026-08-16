@@ -6,14 +6,22 @@ export const roster = [
   { name: 'Nikola Jokić', team: 'DEN', position: 'C' },
 ]
 
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+}
+
 export function rosterRows(players) {
   return players
     .map(
       (player) => `
         <tr>
-          <td class="player-name">${player.name}</td>
-          <td>${player.team}</td>
-          <td>${player.position}</td>
+          <td class="player-name">${escapeHtml(player.name)}</td>
+          <td>${escapeHtml(player.team)}</td>
+          <td>${escapeHtml(player.position)}</td>
         </tr>
       `,
     )
