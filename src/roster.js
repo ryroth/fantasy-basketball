@@ -55,11 +55,16 @@ function escapeHtml(text) {
 export function rosterRows(players) {
   return players
     .map(
-      (player) => `
+      (player, index) => `
         <tr>
           <td class="player-name">${escapeHtml(player.name)}</td>
           <td>${escapeHtml(player.team)}</td>
           <td>${escapeHtml(player.position)}</td>
+          <td>
+            <button type="button" class="remove" data-remove="${index}">
+              Remove
+            </button>
+          </td>
         </tr>
       `,
     )

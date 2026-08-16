@@ -6,8 +6,8 @@ document.querySelector('#app').innerHTML = `
   <p class="hero-badge">My roster</p>
   <h1>Fantasy Basketball</h1>
   <p class="lead">
-    Add a player from this page. The list is saved in this browser, so it
-    stays after a refresh.
+    Add or remove players. The list is saved in this browser, so it stays
+    after a refresh.
   </p>
 </header>
 
@@ -41,6 +41,7 @@ document.querySelector('#app').innerHTML = `
         <th>Player</th>
         <th>Team</th>
         <th>Pos</th>
+        <th><span class="visually-hidden">Actions</span></th>
       </tr>
     </thead>
     <tbody id="roster-body"></tbody>
@@ -55,6 +56,18 @@ const roster = loadRoster()
 function renderRoster() {
   rosterBody.innerHTML = rosterRows(roster)
 }
+
+rosterBody.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-remove]')
+  if (!button) {
+    return
+  }
+
+  const index = Number(button.dataset.remove)
+  roster.splice(index, 1)
+  saveRoster(roster)
+  renderRoster()
+})
 
 addPlayerForm.addEventListener('submit', (event) => {
   event.preventDefault()
