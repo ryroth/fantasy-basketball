@@ -64,6 +64,14 @@ h1 {
   }
 }
 
+h2 {
+  font-size: 22px;
+  margin: 0;
+  @media (max-width: 1024px) {
+    font-size: 20px;
+  }
+}
+
 p {
   margin: 0;
 }
@@ -109,80 +117,34 @@ header {
   line-height: 150%;
 }
 
-#roster {
-  padding: 0 32px 48px;
+#roster,
+#pool {
+  padding: 0 32px 40px;
 
   @media (max-width: 1024px) {
     padding: 0 20px 32px;
   }
 }
 
-#add-player {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 12px;
-  margin-bottom: 24px;
+#pool {
+  border-top: 1px solid var(--border);
+  padding-top: 32px;
 }
 
-#add-player label {
+.section-heading {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 13px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+#roster-count {
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text);
-}
-
-#add-player input,
-#add-player select,
-#add-player button {
-  font: inherit;
-  text-transform: none;
-  letter-spacing: 0;
-  border-radius: 8px;
-  min-height: 44px;
-  box-sizing: border-box;
-}
-
-#add-player input,
-#add-player select {
-  font-weight: 400;
-  color: var(--text-h);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  padding: 8px 12px;
-}
-
-#add-player input[name='name'] {
-  width: 16rem;
-}
-
-#add-player input[name='team'],
-#add-player select[name='position'] {
-  width: 6.5rem;
-}
-
-#add-player button {
-  font-weight: 600;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-
-#add-player button:hover {
-  border-color: var(--accent-border);
-}
-
-#add-player button:focus-visible,
-#add-player input:focus-visible,
-#add-player select:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 
 table {
@@ -230,17 +192,21 @@ td:nth-child(4) {
   text-align: right;
 }
 
-.remove {
+.remove,
+.add {
   font: inherit;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-h);
-  background: var(--code-bg);
   border: 2px solid transparent;
   border-radius: 8px;
   padding: 6px 12px;
   min-height: 36px;
   cursor: pointer;
+}
+
+.remove {
+  color: var(--text-h);
+  background: var(--code-bg);
 }
 
 .remove:hover {
@@ -250,6 +216,25 @@ td:nth-child(4) {
 .remove:focus-visible {
   outline: 2px solid var(--text-h);
   outline-offset: 2px;
+}
+
+.add {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.add:hover:not(:disabled) {
+  border-color: var(--accent-border);
+}
+
+.add:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.add:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .visually-hidden {

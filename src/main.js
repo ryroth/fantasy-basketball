@@ -1,40 +1,28 @@
 import './style.css'
-import { loadRoster, saveRoster, rosterRows } from './roster.js'
+import {
+  ROSTER_LIMIT,
+  loadRoster,
+  saveRoster,
+  rosterPlayers,
+  availablePlayers,
+  playerRows,
+} from './roster.js'
 
 document.querySelector('#app').innerHTML = `
 <header>
   <p class="hero-badge">My roster</p>
   <h1>Fantasy Basketball</h1>
   <p class="lead">
-    Add or remove players. The list is saved in this browser, so it stays
-    after a refresh.
+    Add players from the pool. Your team can hold ${ROSTER_LIMIT}. Removing
+    a player puts them back in the pool.
   </p>
 </header>
 
 <section id="roster">
-  <form id="add-player">
-    <label>
-      Player
-      <input name="name" type="text" required placeholder="Luka Dončić" />
-    </label>
-    <label>
-      Team
-      <input name="team" type="text" required maxlength="3" placeholder="LAL" />
-    </label>
-    <label>
-      Pos
-      <select name="position" required>
-        <option value="" disabled selected>Select</option>
-        <option value="PG">PG</option>
-        <option value="SG">SG</option>
-        <option value="SF">SF</option>
-        <option value="PF">PF</option>
-        <option value="C">C</option>
-      </select>
-    </label>
-    <button type="submit">Add player</button>
-  </form>
-
+  <div class="section-heading">
+    <h2>My roster</h2>
+    <p id="roster-count"></p>
+  </div>
   <table>
     <thead>
       <tr>
@@ -47,14 +35,35 @@ document.querySelector('#app').innerHTML = `
     <tbody id="roster-body"></tbody>
   </table>
 </section>
+
+<section id="pool">
+  <div class="section-heading">
+    <h2>Available players</h2>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Team</th>
+        <th>Pos</th>
+        <th><span class="visually-hidden">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody id="pool-body"></tbody>
+  </table>
+</section>
 `
 
 const rosterBody = document.querySelector('#roster-body')
-const addPlayerForm = document.querySelector('#add-player')
+const poolBody = document.querySelector('#pool-body')
+const rosterCount = document.querySelector('#roster-count')
 const roster = loadRoster()
 
-function renderRoster() {
-  rosterBody.innerHTML = rosterRows(roster)
+function render() {
+  const full = roster.length >= ROSTER_LIMIT
+  rosterCount.textContent = `${roster.length} / ${ROSTER_LIMIT}`
+  rosterBody.innerHTML = playerRows(rosterPlayers(roster), 'remove')
+  poolBody.innerHTML = playerRows(availablePlayers(roster), 'add', full)
 }
 
 rosterBody.addEventListener('click', (event) => {
@@ -63,29 +72,30 @@ rosterBody.addEventListener('click', (event) => {
     return
   }
 
-  const index = Number(button.dataset.remove)
-  roster.splice(index, 1)
-  saveRoster(roster)
-  renderRoster()
-})
-
-addPlayerForm.addEventListener('submit', (event) => {
-  event.preventDefault()
-
-  const form = event.currentTarget
-  const name = form.name.value.trim()
-  const team = form.team.value.trim().toUpperCase()
-  const position = form.position.value
-
-  if (!name || !team || !position) {
+  const index = roster.indexOf(button.dataset.remove)
+  if (index === -1) {
     return
   }
 
-  roster.push({ name, team, position })
+  roster.splice(index, 1)
   saveRoster(roster)
-  renderRoster()
-  form.reset()
-  form.name.focus()
+  render()
 })
 
-renderRoster()
+poolBody.addEventListener('click', (event) => {
+  const button = event.target.closest('[data-add]')
+  if (!button || button.disabled || roster.length >= ROSTER_LIMIT) {
+    return
+  }
+
+  const playerId = button.dataset.add
+  if (roster.includes(playerId)) {
+    return
+  }
+
+  roster.push(playerId)
+  saveRoster(roster)
+  render()
+})
+
+render()

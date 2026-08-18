@@ -1,47 +1,66 @@
-export const starterRoster = [
-  { name: 'Shai Gilgeous-Alexander', team: 'OKC', position: 'PG' },
-  { name: 'Anthony Edwards', team: 'MIN', position: 'SG' },
-  { name: 'Ryan Roth', team: 'BOS', position: 'SF' },
-  { name: 'Giannis Antetokounmpo', team: 'MIL', position: 'PF' },
-  { name: 'Nikola Jokić', team: 'DEN', position: 'C' },
-]
+import { players, playersById } from './players.js'
+
+export const ROSTER_LIMIT = 13
+
+export const starterRosterIds = ['sga', 'edwards', 'tatum', 'giannis', 'jokic']
 
 const STORAGE_KEY = 'fantasy-basketball-roster'
 
-function copyRoster(players) {
-  return players.map((player) => ({ ...player }))
+function isPlayerId(value) {
+  return typeof value === 'string' && playersById.has(value)
 }
 
-function isPlayer(value) {
-  return (
-    value &&
-    typeof value.name === 'string' &&
-    typeof value.team === 'string' &&
-    typeof value.position === 'string'
-  )
+function idsFromSavedRoster(parsed) {
+  const ids = []
+
+  for (const item of parsed) {
+    if (isPlayerId(item) && !ids.includes(item)) {
+      ids.push(item)
+      continue
+    }
+
+    if (item && typeof item.name === 'string') {
+      const match = players.find((player) => player.name === item.name)
+      if (match && !ids.includes(match.id)) {
+        ids.push(match.id)
+      }
+    }
+  }
+
+  return ids
 }
 
 export function loadRoster() {
   const saved = localStorage.getItem(STORAGE_KEY)
 
   if (!saved) {
-    return copyRoster(starterRoster)
+    return [...starterRosterIds]
   }
 
   try {
     const parsed = JSON.parse(saved)
     if (!Array.isArray(parsed)) {
-      return copyRoster(starterRoster)
+      return [...starterRosterIds]
     }
 
-    return parsed.filter(isPlayer)
+    const ids = idsFromSavedRoster(parsed)
+    return ids.length > 0 ? ids : [...starterRosterIds]
   } catch {
-    return copyRoster(starterRoster)
+    return [...starterRosterIds]
   }
 }
 
-export function saveRoster(players) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(players))
+export function saveRoster(rosterIds) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(rosterIds))
+}
+
+export function rosterPlayers(rosterIds) {
+  return rosterIds.map((id) => playersById.get(id)).filter(Boolean)
+}
+
+export function availablePlayers(rosterIds) {
+  const taken = new Set(rosterIds)
+  return players.filter((player) => !taken.has(player.id))
 }
 
 function escapeHtml(text) {
@@ -52,21 +71,27 @@ function escapeHtml(text) {
     .replaceAll('"', '&quot;')
 }
 
-export function rosterRows(players) {
-  return players
-    .map(
-      (player, index) => `
+export function playerRows(playerList, action, rosterFull = false) {
+  const isAdd = action === 'add'
+  const label = isAdd ? 'Add' : 'Remove'
+  const attr = isAdd ? 'data-add' : 'data-remove'
+  const className = isAdd ? 'add' : 'remove'
+
+  return playerList
+    .map((player) => {
+      const disabled = isAdd && rosterFull ? ' disabled' : ''
+      return `
         <tr>
           <td class="player-name">${escapeHtml(player.name)}</td>
           <td>${escapeHtml(player.team)}</td>
           <td>${escapeHtml(player.position)}</td>
           <td>
-            <button type="button" class="remove" data-remove="${index}">
-              Remove
+            <button type="button" class="${className}" ${attr}="${player.id}"${disabled}>
+              ${label}
             </button>
           </td>
         </tr>
-      `,
-    )
+      `
+    })
     .join('')
 }
