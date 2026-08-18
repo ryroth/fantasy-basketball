@@ -1,6 +1,7 @@
+import { league } from './league.js'
 import { players, playersById } from './players.js'
 
-export const ROSTER_LIMIT = 13
+export const ROSTER_LIMIT = league.roster.spots
 
 export const starterRosterIds = ['sga', 'edwards', 'tatum', 'giannis', 'jokic']
 

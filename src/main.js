@@ -1,4 +1,5 @@
 import './style.css'
+import { league, recipeHtml } from './league.js'
 import {
   ROSTER_LIMIT,
   loadRoster,
@@ -17,6 +18,8 @@ document.querySelector('#app').innerHTML = `
     a player puts them back in the pool.
   </p>
 </header>
+
+${recipeHtml(league)}
 
 <section id="roster">
   <div class="section-heading">
