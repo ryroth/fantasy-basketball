@@ -2,11 +2,16 @@ import './style.css'
 import { league, recipeHtml } from './league.js'
 import {
   ROSTER_LIMIT,
+  STARTER_LIMIT,
+  BENCH_LIMIT,
   loadRoster,
   saveRoster,
-  rosterPlayers,
-  availablePlayers,
-  playerRows,
+  lineupCounts,
+  addPlayer,
+  removePlayer,
+  setLineupStatus,
+  rosterRows,
+  poolRows,
 } from './roster.js'
 
 document.querySelector('#app').innerHTML = `
@@ -14,8 +19,9 @@ document.querySelector('#app').innerHTML = `
   <p class="hero-badge">My roster</p>
   <h1>Fantasy Basketball</h1>
   <p class="lead">
-    Add players from the pool. Your team can hold ${ROSTER_LIMIT}. Removing
-    a player puts them back in the pool.
+    Add players from the pool, then mark them as starters or bench. The
+    league recipe caps the team at ${ROSTER_LIMIT}: ${STARTER_LIMIT} start
+    and ${BENCH_LIMIT} bench.
   </p>
 </header>
 
@@ -32,6 +38,7 @@ ${recipeHtml(league)}
         <th>Player</th>
         <th>Team</th>
         <th>Pos</th>
+        <th>Lineup</th>
         <th><span class="visually-hidden">Actions</span></th>
       </tr>
     </thead>
@@ -63,42 +70,45 @@ const rosterCount = document.querySelector('#roster-count')
 const roster = loadRoster()
 
 function render() {
-  const full = roster.length >= ROSTER_LIMIT
-  rosterCount.textContent = `${roster.length} / ${ROSTER_LIMIT}`
-  rosterBody.innerHTML = playerRows(rosterPlayers(roster), 'remove')
-  poolBody.innerHTML = playerRows(availablePlayers(roster), 'add', full)
+  const counts = lineupCounts(roster)
+  rosterCount.textContent = `${counts.total} / ${ROSTER_LIMIT} · ${counts.starters} / ${STARTER_LIMIT} start · ${counts.bench} / ${BENCH_LIMIT} bench`
+  rosterBody.innerHTML = rosterRows(roster)
+  poolBody.innerHTML = poolRows(roster)
+}
+
+function persist() {
+  saveRoster(roster)
+  render()
 }
 
 rosterBody.addEventListener('click', (event) => {
-  const button = event.target.closest('[data-remove]')
-  if (!button) {
+  const removeButton = event.target.closest('[data-remove]')
+  if (removeButton) {
+    if (removePlayer(roster, removeButton.dataset.remove)) {
+      persist()
+    }
     return
   }
 
-  const index = roster.indexOf(button.dataset.remove)
-  if (index === -1) {
+  const moveButton = event.target.closest('[data-lineup]')
+  if (!moveButton || moveButton.disabled) {
     return
   }
 
-  roster.splice(index, 1)
-  saveRoster(roster)
-  render()
+  if (setLineupStatus(roster, moveButton.dataset.player, moveButton.dataset.lineup)) {
+    persist()
+  }
 })
 
 poolBody.addEventListener('click', (event) => {
   const button = event.target.closest('[data-add]')
-  if (!button || button.disabled || roster.length >= ROSTER_LIMIT) {
+  if (!button || button.disabled) {
     return
   }
 
-  const playerId = button.dataset.add
-  if (roster.includes(playerId)) {
-    return
+  if (addPlayer(roster, button.dataset.add)) {
+    persist()
   }
-
-  roster.push(playerId)
-  saveRoster(roster)
-  render()
 })
 
 render()

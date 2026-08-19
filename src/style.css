@@ -243,14 +243,28 @@ td:nth-child(3) {
   width: 5.5rem;
 }
 
-th:nth-child(4),
-td:nth-child(4) {
+#roster th:nth-child(4),
+#roster td:nth-child(4) {
   width: 6.5rem;
+}
+
+#roster th:nth-child(5),
+#roster td:nth-child(5),
+#pool th:nth-child(4),
+#pool td:nth-child(4) {
+  width: 11rem;
   text-align: right;
 }
 
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .remove,
-.add {
+.add,
+.move {
   font: inherit;
   font-size: 14px;
   font-weight: 600;
@@ -261,18 +275,26 @@ td:nth-child(4) {
   cursor: pointer;
 }
 
-.remove {
+.remove,
+.move {
   color: var(--text-h);
   background: var(--code-bg);
 }
 
-.remove:hover {
+.remove:hover:not(:disabled),
+.move:hover:not(:disabled) {
   border-color: var(--border);
 }
 
-.remove:focus-visible {
+.remove:focus-visible,
+.move:focus-visible {
   outline: 2px solid var(--text-h);
   outline-offset: 2px;
+}
+
+.move:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .add {

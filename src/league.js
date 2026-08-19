@@ -41,8 +41,9 @@ export function recipeHtml(settings) {
         <p>Read-only</p>
       </div>
       <p class="recipe-note">
-        These rules live in one settings file. The roster limit already reads
-        from here. Scoring will use this formula in a later slice.
+        These rules live in one settings file. Roster size, starters, and
+        bench already follow this recipe. Scoring will use the formula in a
+        later slice.
       </p>
       <dl class="recipe-grid">
         <div>
