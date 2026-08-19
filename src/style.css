@@ -204,6 +204,13 @@ header {
   color: var(--text);
 }
 
+#week-score {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-h);
+  margin: 0 0 16px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -252,8 +259,21 @@ td:nth-child(3) {
 #roster td:nth-child(5),
 #pool th:nth-child(4),
 #pool td:nth-child(4) {
+  width: 4.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#roster th:nth-child(6),
+#roster td:nth-child(6),
+#pool th:nth-child(5),
+#pool td:nth-child(5) {
   width: 11rem;
   text-align: right;
+}
+
+.points-bench {
+  opacity: 0.55;
 }
 
 .actions {

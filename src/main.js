@@ -13,15 +13,15 @@ import {
   rosterRows,
   poolRows,
 } from './roster.js'
+import { formatPoints, starterPoints } from './scoring.js'
 
 document.querySelector('#app').innerHTML = `
 <header>
   <p class="hero-badge">My roster</p>
   <h1>Fantasy Basketball</h1>
   <p class="lead">
-    Add players from the pool, then mark them as starters or bench. The
-    league recipe caps the team at ${ROSTER_LIMIT}: ${STARTER_LIMIT} start
-    and ${BENCH_LIMIT} bench.
+    Each player has a mock box score for this week. Add from the pool, set
+    starters, and watch the team total — only starters count.
   </p>
 </header>
 
@@ -32,6 +32,7 @@ ${recipeHtml(league)}
     <h2>My roster</h2>
     <p id="roster-count"></p>
   </div>
+  <p id="week-score"></p>
   <table>
     <thead>
       <tr>
@@ -39,6 +40,7 @@ ${recipeHtml(league)}
         <th>Team</th>
         <th>Pos</th>
         <th>Lineup</th>
+        <th>Pts</th>
         <th><span class="visually-hidden">Actions</span></th>
       </tr>
     </thead>
@@ -56,6 +58,7 @@ ${recipeHtml(league)}
         <th>Player</th>
         <th>Team</th>
         <th>Pos</th>
+        <th>Pts</th>
         <th><span class="visually-hidden">Actions</span></th>
       </tr>
     </thead>
@@ -67,11 +70,13 @@ ${recipeHtml(league)}
 const rosterBody = document.querySelector('#roster-body')
 const poolBody = document.querySelector('#pool-body')
 const rosterCount = document.querySelector('#roster-count')
+const weekScore = document.querySelector('#week-score')
 const roster = loadRoster()
 
 function render() {
   const counts = lineupCounts(roster)
   rosterCount.textContent = `${counts.total} / ${ROSTER_LIMIT} · ${counts.starters} / ${STARTER_LIMIT} start · ${counts.bench} / ${BENCH_LIMIT} bench`
+  weekScore.textContent = `Starters this week: ${formatPoints(starterPoints(roster, league.scoring))} pts`
   rosterBody.innerHTML = rosterRows(roster)
   poolBody.innerHTML = poolRows(roster)
 }

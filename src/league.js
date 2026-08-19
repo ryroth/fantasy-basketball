@@ -41,9 +41,9 @@ export function recipeHtml(settings) {
         <p>Read-only</p>
       </div>
       <p class="recipe-note">
-        These rules live in one settings file. Roster size, starters, and
-        bench already follow this recipe. Scoring will use the formula in a
-        later slice.
+        These rules live in one settings file. Roster size, starters, bench,
+        and this week's points all follow this recipe. Only starters count
+        toward the team total.
       </p>
       <dl class="recipe-grid">
         <div>

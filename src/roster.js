@@ -1,5 +1,6 @@
 import { league } from './league.js'
 import { players, playersById } from './players.js'
+import { formatPoints, playerPoints } from './scoring.js'
 
 export const ROSTER_LIMIT = league.roster.spots
 export const STARTER_LIMIT = league.roster.starters
@@ -197,7 +198,13 @@ export function rosterPlayers(roster) {
 
 export function availablePlayers(roster) {
   const taken = new Set(rosterIds(roster))
-  return players.filter((player) => !taken.has(player.id))
+  return players
+    .filter((player) => !taken.has(player.id))
+    .sort(
+      (left, right) =>
+        playerPoints(right.id, league.scoring) -
+        playerPoints(left.id, league.scoring),
+    )
 }
 
 function escapeHtml(text) {
@@ -230,6 +237,9 @@ export function rosterRows(roster) {
           <td>${escapeHtml(player.team)}</td>
           <td>${escapeHtml(player.position)}</td>
           <td>${lineupLabel(player.status)}</td>
+          <td class="${isStarter ? 'points' : 'points points-bench'}" title="${isStarter ? 'Counts toward this week' : 'Bench does not count this week'}">
+            ${formatPoints(playerPoints(player.id, league.scoring))}
+          </td>
           <td class="actions">
             <button
               type="button"
@@ -261,6 +271,7 @@ export function poolRows(roster) {
           <td class="player-name">${escapeHtml(player.name)}</td>
           <td>${escapeHtml(player.team)}</td>
           <td>${escapeHtml(player.position)}</td>
+          <td class="points">${formatPoints(playerPoints(player.id, league.scoring))}</td>
           <td>
             <button type="button" class="add" data-add="${player.id}"${disabled}>
               Add
