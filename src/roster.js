@@ -215,10 +215,29 @@ export function rosterPlayers(roster) {
     .filter(Boolean)
 }
 
-export function availablePlayers(roster) {
+export function availablePlayers(roster, filters = {}) {
   const taken = new Set(rosterIds(roster))
+  const query = String(filters.query || '')
+    .trim()
+    .toLowerCase()
+  const position = filters.position || ''
+
   return players
     .filter((player) => !taken.has(player.id))
+    .filter((player) => {
+      if (position && player.position !== position) {
+        return false
+      }
+
+      if (!query) {
+        return true
+      }
+
+      return (
+        player.name.toLowerCase().includes(query) ||
+        player.team.toLowerCase().includes(query)
+      )
+    })
     .sort(
       (left, right) =>
         playerPoints(right.id, league.scoring) -
@@ -289,10 +308,19 @@ export function rosterRows(roster) {
     .join('')
 }
 
-export function poolRows(roster) {
+export function poolRows(roster, filters = {}) {
   const full = roster.length >= ROSTER_LIMIT
+  const list = availablePlayers(roster, filters)
 
-  return availablePlayers(roster)
+  if (list.length === 0) {
+    return `
+      <tr>
+        <td colspan="5" class="empty-pool">No available players match that search.</td>
+      </tr>
+    `
+  }
+
+  return list
     .map((player) => {
       const disabled = full ? ' disabled' : ''
       return `

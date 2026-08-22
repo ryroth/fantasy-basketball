@@ -17,6 +17,7 @@ import {
   setLineupStatus,
   rosterRows,
   poolRows,
+  availablePlayers,
 } from './roster.js'
 import { formatPoints, starterPoints } from './scoring.js'
 
@@ -65,7 +66,22 @@ document.querySelector('#app').innerHTML = `
   <section id="pool">
     <div class="section-heading">
       <h2>Available players</h2>
+      <p id="pool-count"></p>
     </div>
+    <form id="pool-filters" class="pool-filters">
+      <label>
+        Search
+        <input id="pool-search" type="search" placeholder="Name or team" />
+      </label>
+      <div class="position-filters" role="group" aria-label="Position">
+        <button type="button" class="position-filter" data-position="" aria-pressed="true">All</button>
+        <button type="button" class="position-filter" data-position="PG" aria-pressed="false">PG</button>
+        <button type="button" class="position-filter" data-position="SG" aria-pressed="false">SG</button>
+        <button type="button" class="position-filter" data-position="SF" aria-pressed="false">SF</button>
+        <button type="button" class="position-filter" data-position="PF" aria-pressed="false">PF</button>
+        <button type="button" class="position-filter" data-position="C" aria-pressed="false">C</button>
+      </div>
+    </form>
     <table>
       <thead>
         <tr>
@@ -92,9 +108,17 @@ const rosterCount = document.querySelector('#roster-count')
 const weekScore = document.querySelector('#week-score')
 const resetButton = document.querySelector('#reset-roster')
 const matchupView = document.querySelector('#matchup-view')
+const poolCount = document.querySelector('#pool-count')
+const poolSearch = document.querySelector('#pool-search')
 const roster = loadRoster()
 let selectedPlayerId = null
 let compareWithId = null
+let poolQuery = ''
+let poolPosition = ''
+
+function poolFilters() {
+  return { query: poolQuery, position: poolPosition }
+}
 
 function render() {
   if (selectedPlayerId && compareWithId === 'pick') {
@@ -126,7 +150,17 @@ function render() {
   resetButton.disabled = isDefaultRoster(roster)
   matchupView.innerHTML = matchupHtml(roster)
   rosterBody.innerHTML = rosterRows(roster)
-  poolBody.innerHTML = poolRows(roster)
+  poolBody.innerHTML = poolRows(roster, poolFilters())
+  poolCount.textContent = `${availablePlayers(roster, poolFilters()).length} shown`
+  if (document.activeElement !== poolSearch) {
+    poolSearch.value = poolQuery
+  }
+  document.querySelectorAll('.position-filter').forEach((button) => {
+    button.setAttribute(
+      'aria-pressed',
+      button.dataset.position === poolPosition ? 'true' : 'false',
+    )
+  })
 }
 
 function persist() {
@@ -134,7 +168,22 @@ function persist() {
   render()
 }
 
+document.querySelector('#pool-filters').addEventListener('submit', (event) => {
+  event.preventDefault()
+})
+
+poolSearch.addEventListener('input', (event) => {
+  poolQuery = event.target.value
+  render()
+})
+
 document.querySelector('#app').addEventListener('click', (event) => {
+  const positionButton = event.target.closest('[data-position]')
+  if (positionButton) {
+    poolPosition = positionButton.dataset.position
+    render()
+    return
+  }
   const openButton = event.target.closest('[data-open-player]')
   if (openButton) {
     selectedPlayerId = openButton.dataset.openPlayer

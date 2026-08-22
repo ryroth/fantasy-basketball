@@ -355,7 +355,8 @@ h3 {
   margin-bottom: 12px;
 }
 
-#roster-count {
+#roster-count,
+#pool-count {
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -376,6 +377,84 @@ h3 {
   font-size: 18px;
   font-weight: 500;
   color: var(--text-h);
+}
+
+.pool-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  margin: 0 0 16px;
+}
+
+.pool-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+#pool-search {
+  font: inherit;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-h);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-height: 44px;
+  width: 16rem;
+  box-sizing: border-box;
+}
+
+#pool-search:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.position-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.position-filter {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-h);
+  background: var(--code-bg);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 6px 12px;
+  min-height: 36px;
+  cursor: pointer;
+}
+
+.position-filter:hover {
+  border-color: var(--border);
+}
+
+.position-filter[aria-pressed='true'] {
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+}
+
+.position-filter:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.empty-pool {
+  text-align: center;
+  color: var(--text);
 }
 
 #reset-roster:disabled {
