@@ -162,6 +162,10 @@ export function removePlayer(roster, playerId) {
   return true
 }
 
+export function findSlot(roster, playerId) {
+  return roster.find((slot) => slot.id === playerId) ?? null
+}
+
 export function setLineupStatus(roster, playerId, status) {
   if (!isLineupStatus(status)) {
     return false
@@ -219,6 +223,16 @@ function lineupLabel(status) {
   return status === 'starter' ? 'Starter' : 'Bench'
 }
 
+function playerNameCell(player) {
+  return `
+    <td class="player-name">
+      <button type="button" class="player-link" data-open-player="${player.id}">
+        ${escapeHtml(player.name)}
+      </button>
+    </td>
+  `
+}
+
 export function rosterRows(roster) {
   const counts = lineupCounts(roster)
   const startFull = counts.starters >= STARTER_LIMIT
@@ -233,7 +247,7 @@ export function rosterRows(roster) {
 
       return `
         <tr>
-          <td class="player-name">${escapeHtml(player.name)}</td>
+          ${playerNameCell(player)}
           <td>${escapeHtml(player.team)}</td>
           <td>${escapeHtml(player.position)}</td>
           <td>${lineupLabel(player.status)}</td>
@@ -268,7 +282,7 @@ export function poolRows(roster) {
       const disabled = full ? ' disabled' : ''
       return `
         <tr>
-          <td class="player-name">${escapeHtml(player.name)}</td>
+          ${playerNameCell(player)}
           <td>${escapeHtml(player.team)}</td>
           <td>${escapeHtml(player.position)}</td>
           <td class="points">${formatPoints(playerPoints(player.id, league.scoring))}</td>

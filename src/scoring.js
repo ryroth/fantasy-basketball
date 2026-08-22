@@ -28,3 +28,20 @@ export function starterPoints(roster, scoring) {
 export function formatPoints(value) {
   return value.toFixed(1)
 }
+
+export function scoringBreakdown(stats, scoring) {
+  if (!stats || !scoring) {
+    return []
+  }
+
+  return Object.entries(scoring).map(([stat, weight]) => {
+    const amount = Number(stats[stat]) || 0
+    const value = Number(weight)
+    return {
+      stat,
+      amount,
+      weight: value,
+      points: amount * value,
+    }
+  })
+}

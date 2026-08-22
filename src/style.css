@@ -48,7 +48,8 @@ body {
 }
 
 h1,
-h2 {
+h2,
+h3 {
   font-family: var(--heading);
   font-weight: 500;
   color: var(--text-h);
@@ -119,12 +120,74 @@ header {
 
 #recipe,
 #roster,
-#pool {
+#pool,
+#player {
   padding: 0 32px 40px;
 
   @media (max-width: 1024px) {
     padding: 0 20px 32px;
   }
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-h);
+  margin: 28px 0 12px;
+}
+
+.player-link,
+.back {
+  font: inherit;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.player-link {
+  font-weight: 500;
+  color: var(--text-h);
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.player-link:hover,
+.player-link:focus-visible {
+  color: var(--accent);
+}
+
+.back {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+.back:hover,
+.back:focus-visible {
+  text-decoration: underline;
+}
+
+.player-actions {
+  justify-content: flex-start;
+  margin: 20px 0 8px;
+}
+
+#player .recipe-grid {
+  margin-bottom: 8px;
+}
+
+#player table th:nth-child(2),
+#player table td:nth-child(2),
+#player table th:nth-child(3),
+#player table td:nth-child(3),
+#player table th:nth-child(4),
+#player table td:nth-child(4) {
+  width: auto;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 #roster,
