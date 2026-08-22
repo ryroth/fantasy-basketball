@@ -121,7 +121,8 @@ header {
 #recipe,
 #roster,
 #pool,
-#player {
+#player,
+#compare {
   padding: 0 32px 40px;
 
   @media (max-width: 1024px) {
@@ -188,6 +189,53 @@ h3 {
   width: auto;
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+
+#compare h2 {
+  margin: 8px 0 12px;
+}
+
+.compare-heads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px 0 24px;
+}
+
+.compare-meta {
+  font-size: 15px;
+  margin-top: 6px;
+}
+
+.compare-table th,
+.compare-table td {
+  width: auto;
+}
+
+.compare-table th:nth-child(2),
+.compare-table td:nth-child(2),
+.compare-table th:nth-child(3),
+.compare-table td:nth-child(3) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.compare-table .is-ahead {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+#compare table:not(.compare-table) th:nth-child(4),
+#compare table:not(.compare-table) td:nth-child(4) {
+  width: 4.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#compare table:not(.compare-table) th:nth-child(5),
+#compare table:not(.compare-table) td:nth-child(5) {
+  width: 7.5rem;
+  text-align: right;
 }
 
 #roster,

@@ -1,5 +1,6 @@
 import './style.css'
 import { league, recipeHtml } from './league.js'
+import { compareHtml, comparePickerHtml } from './compare.js'
 import { playerDetailHtml } from './player.js'
 import {
   ROSTER_LIMIT,
@@ -22,7 +23,8 @@ document.querySelector('#app').innerHTML = `
   <h1>Fantasy Basketball</h1>
   <p class="lead">
     Each player has a mock box score for this week. Click a name to see how
-    the recipe scored it. Only starters count toward the team total.
+    the recipe scored it, or compare two players. Only starters count toward
+    the team total.
   </p>
 </header>
 
@@ -80,8 +82,23 @@ const rosterCount = document.querySelector('#roster-count')
 const weekScore = document.querySelector('#week-score')
 const roster = loadRoster()
 let selectedPlayerId = null
+let compareWithId = null
 
 function render() {
+  if (selectedPlayerId && compareWithId === 'pick') {
+    teamView.hidden = true
+    playerView.hidden = false
+    playerView.innerHTML = comparePickerHtml(selectedPlayerId)
+    return
+  }
+
+  if (selectedPlayerId && compareWithId) {
+    teamView.hidden = true
+    playerView.hidden = false
+    playerView.innerHTML = compareHtml(selectedPlayerId, compareWithId, roster)
+    return
+  }
+
   if (selectedPlayerId) {
     teamView.hidden = true
     playerView.hidden = false
@@ -107,12 +124,33 @@ document.querySelector('#app').addEventListener('click', (event) => {
   const openButton = event.target.closest('[data-open-player]')
   if (openButton) {
     selectedPlayerId = openButton.dataset.openPlayer
+    compareWithId = null
+    render()
+    return
+  }
+
+  if (event.target.closest('[data-start-compare]')) {
+    compareWithId = 'pick'
+    render()
+    return
+  }
+
+  const compareButton = event.target.closest('[data-compare-with]')
+  if (compareButton) {
+    compareWithId = compareButton.dataset.compareWith
+    render()
+    return
+  }
+
+  if (event.target.closest('[data-back-player]')) {
+    compareWithId = null
     render()
     return
   }
 
   if (event.target.closest('[data-back-team]')) {
     selectedPlayerId = null
+    compareWithId = null
     render()
     return
   }

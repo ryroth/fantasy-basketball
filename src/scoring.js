@@ -45,3 +45,45 @@ export function scoringBreakdown(stats, scoring) {
     }
   })
 }
+
+function rowWinner(stat, left, right) {
+  if (left == null || right == null || left === right) {
+    return 'tie'
+  }
+
+  if (stat === 'TO') {
+    return left < right ? 'left' : 'right'
+  }
+
+  return left > right ? 'left' : 'right'
+}
+
+export function comparePlayers(leftId, rightId, scoring) {
+  const leftStats = weeklyStats[leftId]
+  const rightStats = weeklyStats[rightId]
+  const leftPoints = playerPoints(leftId, scoring)
+  const rightPoints = playerPoints(rightId, scoring)
+  const rows = [
+    {
+      stat: 'FPTS',
+      label: 'Fantasy pts',
+      left: leftStats ? leftPoints : null,
+      right: rightStats ? rightPoints : null,
+      winner: rowWinner('FPTS', leftStats ? leftPoints : null, rightStats ? rightPoints : null),
+    },
+  ]
+
+  for (const stat of Object.keys(scoring)) {
+    const left = leftStats ? Number(leftStats[stat]) || 0 : null
+    const right = rightStats ? Number(rightStats[stat]) || 0 : null
+    rows.push({
+      stat,
+      label: stat,
+      left,
+      right,
+      winner: rowWinner(stat, left, right),
+    })
+  }
+
+  return { leftPoints, rightPoints, rows }
+}

@@ -152,6 +152,7 @@ export function playerDetailHtml(playerId, roster) {
       </p>
       <div class="actions player-actions">
         ${actionButtons(playerId, roster)}
+        <button type="button" class="move" data-start-compare>Compare</button>
       </div>
       ${boxScoreHtml(playerId)}
     </section>
