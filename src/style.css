@@ -119,6 +119,7 @@ header {
 }
 
 #recipe,
+#matchup,
 #roster,
 #pool,
 #player,
@@ -238,10 +239,57 @@ h3 {
   text-align: right;
 }
 
+#matchup,
 #roster,
 #pool {
   border-top: 1px solid var(--border);
   padding-top: 32px;
+}
+
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 8px 0 16px;
+}
+
+.score-label {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.score-value {
+  font-size: 36px;
+  font-weight: 500;
+  color: var(--text-h);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+
+  @media (max-width: 1024px) {
+    font-size: 28px;
+  }
+}
+
+.matchup-result {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-h);
+  margin-bottom: 12px;
+}
+
+#matchup h3 {
+  margin-top: 8px;
+}
+
+#matchup th:nth-child(4),
+#matchup td:nth-child(4) {
+  width: 4.5rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .recipe-note {

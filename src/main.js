@@ -1,5 +1,6 @@
 import './style.css'
 import { league, recipeHtml } from './league.js'
+import { matchupHtml } from './matchup.js'
 import { compareHtml, comparePickerHtml } from './compare.js'
 import { playerDetailHtml } from './player.js'
 import {
@@ -25,13 +26,15 @@ document.querySelector('#app').innerHTML = `
   <h1>Fantasy Basketball</h1>
   <p class="lead">
     Each player has a mock box score for this week. Click a name to see how
-    the recipe scored it, or compare two players. Only starters count toward
-    the team total.
+    the recipe scored it, compare two players, or check the matchup. Only
+    starters count toward the team total.
   </p>
 </header>
 
 <div id="team-view">
   ${recipeHtml(league)}
+
+  <div id="matchup-view"></div>
 
   <section id="roster">
     <div class="section-heading">
@@ -88,6 +91,7 @@ const poolBody = document.querySelector('#pool-body')
 const rosterCount = document.querySelector('#roster-count')
 const weekScore = document.querySelector('#week-score')
 const resetButton = document.querySelector('#reset-roster')
+const matchupView = document.querySelector('#matchup-view')
 const roster = loadRoster()
 let selectedPlayerId = null
 let compareWithId = null
@@ -120,6 +124,7 @@ function render() {
   rosterCount.textContent = `${counts.total} / ${ROSTER_LIMIT} · ${counts.starters} / ${STARTER_LIMIT} start · ${counts.bench} / ${BENCH_LIMIT} bench`
   weekScore.textContent = `Starters this week: ${formatPoints(starterPoints(roster, league.scoring))} pts`
   resetButton.disabled = isDefaultRoster(roster)
+  matchupView.innerHTML = matchupHtml(roster)
   rosterBody.innerHTML = rosterRows(roster)
   poolBody.innerHTML = poolRows(roster)
 }
