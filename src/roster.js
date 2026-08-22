@@ -120,6 +120,21 @@ export function saveRoster(roster) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(roster))
 }
 
+export function isDefaultRoster(roster) {
+  const fresh = createStarterRoster()
+  return (
+    roster.length === fresh.length &&
+    roster.every(
+      (slot, index) =>
+        slot.id === fresh[index].id && slot.status === fresh[index].status,
+    )
+  )
+}
+
+export function resetRoster(roster) {
+  roster.splice(0, roster.length, ...createStarterRoster())
+}
+
 export function rosterIds(roster) {
   return roster.map((slot) => slot.id)
 }

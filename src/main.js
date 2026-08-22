@@ -8,6 +8,8 @@ import {
   BENCH_LIMIT,
   loadRoster,
   saveRoster,
+  isDefaultRoster,
+  resetRoster,
   lineupCounts,
   addPlayer,
   removePlayer,
@@ -36,7 +38,12 @@ document.querySelector('#app').innerHTML = `
       <h2>My roster</h2>
       <p id="roster-count"></p>
     </div>
-    <p id="week-score"></p>
+    <div class="roster-toolbar">
+      <p id="week-score"></p>
+      <button type="button" class="remove" id="reset-roster" data-reset-roster>
+        Reset roster
+      </button>
+    </div>
     <table>
       <thead>
         <tr>
@@ -80,6 +87,7 @@ const rosterBody = document.querySelector('#roster-body')
 const poolBody = document.querySelector('#pool-body')
 const rosterCount = document.querySelector('#roster-count')
 const weekScore = document.querySelector('#week-score')
+const resetButton = document.querySelector('#reset-roster')
 const roster = loadRoster()
 let selectedPlayerId = null
 let compareWithId = null
@@ -111,6 +119,7 @@ function render() {
   playerView.hidden = true
   rosterCount.textContent = `${counts.total} / ${ROSTER_LIMIT} · ${counts.starters} / ${STARTER_LIMIT} start · ${counts.bench} / ${BENCH_LIMIT} bench`
   weekScore.textContent = `Starters this week: ${formatPoints(starterPoints(roster, league.scoring))} pts`
+  resetButton.disabled = isDefaultRoster(roster)
   rosterBody.innerHTML = rosterRows(roster)
   poolBody.innerHTML = poolRows(roster)
 }
@@ -145,6 +154,23 @@ document.querySelector('#app').addEventListener('click', (event) => {
   if (event.target.closest('[data-back-player]')) {
     compareWithId = null
     render()
+    return
+  }
+
+  if (event.target.closest('[data-reset-roster]')) {
+    if (isDefaultRoster(roster)) {
+      return
+    }
+
+    const confirmed = window.confirm(
+      'Reset the roster to the five starter players? Added players and lineup changes will be cleared.',
+    )
+    if (!confirmed) {
+      return
+    }
+
+    resetRoster(roster)
+    persist()
     return
   }
 

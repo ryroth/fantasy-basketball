@@ -315,11 +315,24 @@ h3 {
   color: var(--text);
 }
 
+.roster-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
 #week-score {
   font-size: 18px;
   font-weight: 500;
   color: var(--text-h);
-  margin: 0 0 16px;
+}
+
+#reset-roster:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 table {
